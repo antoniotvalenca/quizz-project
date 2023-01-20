@@ -1,0 +1,36 @@
+{
+  "name": "@antoniotvalenca/urna-eletronica",
+  "version": "1.0.0",
+  "description": "Simulador de urna eletrônica para votações online",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js"
+  },
+  "author": "Antonio Valença",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.1",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "lodash": "^4.17.21",
+    "nodemon": "^2.0.20",
+    "pg": "^8.8.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.28.0"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.5.2"
+  },
+  "keywords": [
+    "voting",
+    "simulator",
+    "urna",
+    "urna-eletronica",
+    "javascript",
+    "node-js",
+    "sequelize"
+  ]
+}
