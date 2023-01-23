@@ -26,4 +26,4 @@ class QuizzResult extends Model {
     }
 }
 
-module.exports = QuizzOption;
+module.exports = QuizzResult;
