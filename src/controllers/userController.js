@@ -5,27 +5,27 @@ module.exports = () => {
     const store = async (req, res) => {
         try {
             const data = pick(req.data, ['name', 'age', 'cpf', 'email', 'password'])
-            const users = await UserService.createNewUser(data);
+            const user = await UserService.createNewUser(data);
 
-            return res.json(users)
+            return res.json(user)
 
         } catch (e) {
             return res.status(500).json({
-                message: 'Erro ao criar usuário'
+                message: 'Erro ao criar o Usuário'
             });
         };
     };
 
     const login = async (req, res) => {
         try {
-            const data = pick(req.data, ['cpf', 'password']);
+            const data = pick(req.data, ['cpf', 'email', 'password']);
             const token = await UserService.loginUser(data);
 
             return res.json(token);
 
         } catch (e) {
             return res.status(500).json({
-                message: 'Erro ao logar usuário'
+                message: 'Erro ao logar Usuário'
             });
         };
     };
@@ -41,21 +41,21 @@ module.exports = () => {
 
         } catch (e) {
             return res.status(500).json({
-                message: 'Erro ao atualizar usuário'
+                message: 'Erro ao atualizar Usuário'
             });
         };
     };
 
     const destroy = async (req, res) => {
         try {
-            const { id } = req.filter;
+            const id = req.userId;
             const deletedUser = await User.deleteUser(id);
 
             return res.json(deletedUser);
 
         } catch (e) {
             return res.status(500).json({
-                message: 'Erro ao deletar usuário'
+                message: 'Erro ao deletar Usuário'
             });
         };
     };

@@ -1,19 +1,73 @@
-const Quizz = require('../models/Quizz');
-
 module.exports = () => {
     const { pick } = require('lodash');
     const quizzService = require('../services/quizzService');
 
     const store = async (req, res) => {
-        const { options_quantity } = req.data;
-        return createQuizz;
-    }
+        try {
+            const data = {
+                ...pick(req.data, [
+                    'title',
+                    'options_quantity',
+                    'end_at',
+                    'public'
+                ]),
+                user_id: req.userId
+            };
 
+            const quizz = await quizzService.createNewQuizz(data);
+
+            return res.json(quizz);
+
+        } catch (e) {
+            return res.status(500).json({
+                message: 'Não foi possível criar o Quizz'
+            });
+        };
+    };
+
+    const index = async (req, res) => {
+        try {
+            const data = pick(req.data, ['title']);
+            const quizzes = await quizzService.indexQuizz(data);
+
+            return res.json(quizzes);
+        } catch (e) {
+            return res.status(500).json({
+                message: 'Não foi possível listar os Quizzes'
+            });
+        };
+    };
+
+    const show = async (req, res) => {
+        try {
+            const data = pick(req.filter, ['id']);
+            const quizz = await quizzService.showQuizz(data);
+
+            return res.json(quizz);
+        } catch (e) {
+            res.status(500).json({
+                message: 'Não foi possível achar o Quizz'
+            });
+        };
+    };
+
+    const destroy = async (req, res) => {
+        try {
+            const id = req.userId;
+            const deletedQuizz = await quizzService.deleteQuizz(id);
+
+            return res.json(deletedQuizz)
+        } catch (e) {
+            res.status(500).json({
+                message: 'Não foi possível deletar o Quizz'
+            });
+        };
+    };
 
     return {
         store,
-        login,
-        update,
+        index,
+        show,
         destroy
     }
 }

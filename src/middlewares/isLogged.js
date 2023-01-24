@@ -13,7 +13,7 @@ module.exports = (req, res, next) => {
     try {
         const dados = jwt.verify(token, process.env.TOKEN_SECRET);
         const { id, email } = dados;
-        req.id = id;
+        req.userId = id;
         req.email = email;
         next();
     } catch (e) {

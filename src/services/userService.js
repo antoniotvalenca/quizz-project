@@ -31,11 +31,11 @@ module.exports = () => {
             attributes: ['id', 'name', 'cpf', 'age', 'email', 'password_hash']
         });
 
-        if (!user) throw new Error('CPF e/ou senha inválidos');
+        if (!user) throw new Error('CPF/E-mail ou senha inválidos');
 
         const validPassword = compareSync(data.password, user.password_hash);
 
-        if (!validPassword) throw new Error('CPF ou senha inválidos');
+        if (!validPassword) throw new Error('CPF/E-mail ou senha inválidos');
 
         return jwt.sign({
             id: user.id,
