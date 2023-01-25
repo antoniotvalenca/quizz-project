@@ -3,6 +3,17 @@ module.exports = () => {
     const { Op, where } = require('Sequelize');
 
     const createNewQuizz = async data => {
+        const isCreatedQuizz = await Quizz.findOne({
+            where: {
+                user_id: data.user_id,
+                title: data.title
+            }
+        });
+
+        if (isCreatedQuizz) {
+            throw new Error('Você já criou um Quizz com este título.');
+        };
+
         return await Quizz.create(data);
     };
 

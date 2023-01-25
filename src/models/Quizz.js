@@ -20,6 +20,10 @@ class Quizz extends Model {
             end_at: {
                 type: Sequelize.STRING,
             },
+            public: {
+                type: Sequelize.BOOLEAN,
+                defaultValue: true
+            }
         }, {
             sequelize,
             paranoid: true,

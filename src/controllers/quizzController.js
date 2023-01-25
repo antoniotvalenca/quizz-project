@@ -1,6 +1,8 @@
 module.exports = () => {
     const { pick } = require('lodash');
     const quizzService = require('../services/quizzService');
+    const quizzOptionService = require('../services/quizzOptionService');
+    const Quizz = require('../models/Quizz');
 
     const store = async (req, res) => {
         try {
@@ -53,10 +55,32 @@ module.exports = () => {
 
     const destroy = async (req, res) => {
         try {
-            const id = req.userId;
-            const deletedQuizz = await quizzService.deleteQuizz(id);
+            const data = {
+                ...pick(req.data, [
+                'title',
+                ]),
+                user_id: req.userId
+            };
 
-            return res.json(deletedQuizz)
+            const quizz = Quizz.findOne({
+                where: {
+                    title: data.title,
+                    user_id: data.user_id
+                }
+            });
+
+            if (!quizz) {
+                throw new Error('Não foi possível achar este Quizz.');
+            };
+
+            const deletedQuizz = await quizzService.deleteQuizz(quizz.id);
+            const deletedQuizzOptions = await quizzOptionService.deleteOptions(quizz.id)
+
+            return res.json({
+                deleted_quizz: deletedQuizz,
+                deleted_options: deletedQuizzOptions
+            });
+
         } catch (e) {
             res.status(500).json({
                 message: 'Não foi possível deletar o Quizz'

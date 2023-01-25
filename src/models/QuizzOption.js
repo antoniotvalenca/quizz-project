@@ -8,6 +8,10 @@ class QuizzOption extends Model {
             },
             option_value: {
                 type: Sequelize.STRING,
+            },
+            votes: {
+                type: Sequelize.INTEGER,
+                defaultValue: 0
             }
         }, {
             sequelize,
