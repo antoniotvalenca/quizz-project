@@ -2,7 +2,7 @@ module.exports = () => {
     const User = require('../models/User');
     const { compareSync } = require('bcrypt');
     const jwt = require('jsonwebtoken');
-    const { Op, where } = require('Sequelize');
+    const { Op } = require('Sequelize');
 
     const createNewUser = async data => {
         const user = await User.findOne({

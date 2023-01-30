@@ -1,6 +1,6 @@
 module.exports = () => {
     const Quizz = require('../models/Quizz');
-    const { Op, where } = require('Sequelize');
+    const { Op } = require('Sequelize');
 
     const createNewQuizz = async data => {
         const isCreatedQuizz = await Quizz.findOne({
@@ -44,14 +44,47 @@ module.exports = () => {
             }
         });
 
-        return quizz
+        return quizz;
     };
 
-    const deleteQuizz = async id => {
+    const endQuizz = async (filter, change) => {
+        const findQuizz = await Quizz.findOne({
+            where: {
+                user_id: filter.user_id,
+                id: filter.quizz_id
+            }
+        });
+
+        if (!findQuizz) {
+            throw new Error('Este Quizz não existe.');
+        };
+
+        const quizzEdit = await Quizz.update(change, {
+            where: {
+                id: filter.quizz_id,
+                user_id: filter.user_id
+            }
+        });
+
+        return quizzEdit;
+    };
+
+    const deleteQuizz = async data => {
+        const quizz = Quizz.findOne({
+            where: {
+                id: data.quizz_id,
+                user_id: data.user_id
+            }
+        });
+
+        if (!quizz) {
+            throw new Error('Este quizz não existe.')
+        };
+
         await Quizz.destroy({
             where: {
-                id: id,
-                deleted_at: null
+                id: data.quizz_id,
+                user_id: data.user_id
             },
             paranoid: false
         });
@@ -63,6 +96,7 @@ module.exports = () => {
         createNewQuizz,
         indexQuizz,
         showQuizz,
+        endQuizz,
         deleteQuizz
     };
 

@@ -1,16 +1,15 @@
 module.exports = () => {
     const QuizzOption = require('../models/QuizzOption');
-    const { Op, where } = require('Sequelize');
 
     const addOption = async data => {
         return await QuizzOption.create(data);
     };
 
-    const indexOptions = async id => {
+    const indexOptions = async data => {
         const options = await QuizzOption.findAll({
             attributes: ['option_value'],
             where: {
-                quizz_id: id
+                quizz_id: data.quizz_id
             }
         });
 
@@ -46,7 +45,6 @@ module.exports = () => {
 
         return true;
     };
-
 
     return {
         addOption,

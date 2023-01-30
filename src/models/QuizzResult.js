@@ -15,6 +15,13 @@ class QuizzResult extends Model {
             win_rate: {
                 type: Sequelize.STRING
             },
+            option_id: {
+                type: Sequelize.STRING
+            },
+            total_votes: {
+                type: Sequelize.INTEGER,
+                defaultValue: 0
+            }
         }, {
             sequelize
         });
@@ -22,7 +29,8 @@ class QuizzResult extends Model {
 
     static associate(models) {
         this.belongsTo(models.Quizz, { foreignKey: 'quizz_id' }),
-        this.belongsTo(models.User, { foreignKey: 'user_id' });
+        this.belongsTo(models.User, { foreignKey: 'user_id' }),
+        this.belongsTo(models.QuizzOption, { foreignKey: 'option_id' })
     }
 }
 

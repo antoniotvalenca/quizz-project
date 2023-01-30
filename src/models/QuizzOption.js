@@ -24,6 +24,7 @@ class QuizzOption extends Model {
 
     static associate(models) {
         this.belongsTo(models.Quizz, { foreignKey: 'quizz_id' });
+        this.hasMany(models.QuizzResult, { foreignKey: 'quizz_id' });
     }
 }
 

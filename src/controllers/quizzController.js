@@ -19,7 +19,6 @@ module.exports = () => {
             const quizz = await quizzService.createNewQuizz(data);
 
             return res.json(quizz);
-
         } catch (e) {
             return res.status(500).json({
                 message: 'Não foi possível criar o Quizz'
@@ -52,35 +51,42 @@ module.exports = () => {
             });
         };
     };
+    const update = async (req, res) => {
+        try {
+            const change = {
+                ...pick(req.data, ['end_at']),
+                ongoing: false
+            };
+
+            const filter = {
+                quizz_id: req.params['quizz_id'],
+                user_id: req.userId
+            };
+
+            const quizzChanges = await quizzService.endQuizz(filter, change);
+
+            return res.json(quizzChanges);
+        } catch (e) {
+            return res.status(500).json({
+                message: 'Erro ao finalizar Quizz'
+            });
+        };
+    };
 
     const destroy = async (req, res) => {
         try {
             const data = {
-                ...pick(req.data, [
-                'title',
-                ]),
+                quizz_id: req.params['quizz_id'],
                 user_id: req.userId
             };
 
-            const quizz = Quizz.findOne({
-                where: {
-                    title: data.title,
-                    user_id: data.user_id
-                }
-            });
-
-            if (!quizz) {
-                throw new Error('Não foi possível achar este Quizz.');
-            };
-
-            const deletedQuizz = await quizzService.deleteQuizz(quizz.id);
-            const deletedQuizzOptions = await quizzOptionService.deleteOptions(quizz.id)
+            const deletedQuizz = await quizzService.deleteQuizz(data);
+            const deletedQuizzOptions = await quizzOptionService.deleteOptions(data.quizz_id);
 
             return res.json({
                 deleted_quizz: deletedQuizz,
                 deleted_options: deletedQuizzOptions
             });
-
         } catch (e) {
             res.status(500).json({
                 message: 'Não foi possível deletar o Quizz'
@@ -92,6 +98,7 @@ module.exports = () => {
         store,
         index,
         show,
+        update,
         destroy
     }
 }

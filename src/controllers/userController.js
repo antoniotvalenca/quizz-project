@@ -33,12 +33,13 @@ module.exports = () => {
     const update = async (req, res) => {
         try {
             const change = pick(req.data, ['name', 'age', 'email']);
-            const filter = pick(req.filter, ['id']);
+            const filter = {
+                id: req.userId
+            };
 
             const userChanges = await UserService.updateUser(change, filter);
 
             return res.json(userChanges);
-
         } catch (e) {
             return res.status(500).json({
                 message: 'Erro ao atualizar Usuário'
@@ -49,7 +50,7 @@ module.exports = () => {
     const destroy = async (req, res) => {
         try {
             const id = req.userId;
-            const deletedUser = await User.deleteUser(id);
+            const deletedUser = await UserService.deleteUser(id);
 
             return res.json(deletedUser);
 

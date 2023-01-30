@@ -7,69 +7,62 @@ module.exports = () => {
         try {
             const fullData = {
                 ...pick(req.data, [
-                    'title',
-                    'option_value',
+                    'option_value'
                 ]),
+                quizz_id: req.params['quizz_id'],
                 user_id: req.userId
             };
 
             const findQuizz = await Quizz.findOne({
                 where: {
                     user_id: fullData.user_id,
-                    title: fullData.title
+                    id: fullData.quizz_id
                 }
             });
 
             if (!findQuizz) {
-                throw new Error('Este quizz não existe.')
+                throw new Error('Este Quizz não existe ou já foi encerrado.')
             };
 
-            const dataOption = {
-                ...pick(fullData, [
-                    'option_value'
-                ]),
-                quizz_id: findQuizz.id
+            const finalData = {
+                option_value: fullData.option_value,
+                quizz_id: fullData.quizz_id
             };
 
-            const createdOption = await quizzOptionService.addOption(dataOption);
+            const createdOption = await quizzOptionService.addOption(finalData);
 
             return res.json(createdOption);
-
         } catch (e) {
             return res.status(500).json({
                 message: 'Não foi possível cadastrar opção de voto.'
             });
         };
     };
-
     const index = async (req, res) => {
         try {
             const data = {
-            ...pick(req.data, [
-                'title',
-            ]),
-            user_id: req.userId
+                quizz_id: req.params['quizz_id'],
             };
 
-            const quizz = await Quizz.findOne({
+            const findQuizz = await Quizz.findOne({
                 where: {
-                    title: data.title,
-                    user_id: data.user_id
+                    id: data.quizz_id,
+                    ongoing: true,
+                    public: true
                 }
             });
 
-            if (!quizz) {
-                throw new Error('Este quizz não existe.')
+            if (!findQuizz) {
+                throw new Error('Não foi possível encontrar Quizz.');
             };
 
-            const allOptions = await quizzOptionService.indexOptions(quizz.id);
+            const options = await quizzOptionService.indexOptions(data);
 
-            return res.json(allOptions);
-
+            return res.json(options);
         } catch (e) {
             return res.status(500).json({
                 message: 'Não foi possível buscar as opções de voto'
-            })
+            });
         };
     };
 
