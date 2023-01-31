@@ -8,7 +8,6 @@ module.exports = () => {
             const user = await UserService.createNewUser(data);
 
             return res.json(user)
-
         } catch (e) {
             return res.status(500).json({
                 message: 'Erro ao criar o Usuário'
@@ -66,5 +65,5 @@ module.exports = () => {
         login,
         update,
         destroy
-    }
-}
+    };
+};

@@ -7,8 +7,8 @@ class User extends Model {
             name: {
                 type: Sequelize.STRING,
             },
-            age: {
-                type: Sequelize.INTEGER,
+            born: {
+                type: Sequelize.DATEONLY,
             },
             cpf: {
                 type: Sequelize.STRING,

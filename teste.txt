@@ -1,2 +1,0 @@
-* dateonly (sequelize data type) - born
-    -> migration de trocar o tablename e properties
