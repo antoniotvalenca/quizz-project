@@ -1,16 +1,13 @@
 module.exports = () => {
     const { pick } = require('lodash');
-    const quizzService = require('../services/quizzService');
-    const quizzOptionService = require('../services/quizzOptionService');
-    const Quizz = require('../models/Quizz');
+    const quizzService = require('../services/quizzService')();
+    const quizzOptionService = require('../services/quizzOptionService')();
 
     const store = async (req, res) => {
         try {
             const data = {
-                ...pick(req.data, [
+                ...pick(req.body, [
                     'title',
-                    'options_quantity',
-                    'end_at',
                     'public'
                 ]),
                 user_id: req.userId
@@ -19,42 +16,43 @@ module.exports = () => {
             const quizz = await quizzService.createNewQuizz(data);
 
             return res.json(quizz);
-        } catch (e) {
+        } catch (error) {
             return res.status(500).json({
-                message: 'Não foi possível criar o Quizz'
+                message: error || 'Não foi possível criar o Quizz'
             });
         };
     };
 
     const index = async (req, res) => {
         try {
-            const data = pick(req.data, ['title']);
+            const data = pick(req.body, ['title']);
+
             const quizzes = await quizzService.indexQuizz(data);
 
             return res.json(quizzes);
-        } catch (e) {
+        } catch (error) {
             return res.status(500).json({
-                message: 'Não foi possível listar os Quizzes'
+                message: error || 'Não foi possível listar os Quizzes'
             });
         };
     };
 
     const show = async (req, res) => {
         try {
-            const data = pick(req.filter, ['id']);
+            const data = pick(req.body, ['id']);
             const quizz = await quizzService.showQuizz(data);
 
             return res.json(quizz);
-        } catch (e) {
+        } catch (error) {
             res.status(500).json({
-                message: 'Não foi possível achar o Quizz'
+                message: error || 'Não foi possível achar o Quizz'
             });
         };
     };
     const update = async (req, res) => {
         try {
             const change = {
-                ...pick(req.data, ['end_at']),
+                ...pick(req.body, ['end_at']),
                 ongoing: false
             };
 
@@ -66,9 +64,9 @@ module.exports = () => {
             const quizzChanges = await quizzService.endQuizz(filter, change);
 
             return res.json(quizzChanges);
-        } catch (e) {
+        } catch (error) {
             return res.status(500).json({
-                message: 'Erro ao finalizar Quizz'
+                message: error || 'Erro ao finalizar Quizz'
             });
         };
     };
@@ -87,9 +85,9 @@ module.exports = () => {
                 deleted_quizz: deletedQuizz,
                 deleted_options: deletedQuizzOptions
             });
-        } catch (e) {
+        } catch (error) {
             res.status(500).json({
-                message: 'Não foi possível deletar o Quizz'
+                message: error || 'Não foi possível deletar o Quizz'
             });
         };
     };

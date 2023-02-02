@@ -8,6 +8,7 @@ routes.post('/signup', UserController.store);
 routes.post('/login', UserController.login);
 
 routes.put('/users/:id/profile', isLogged, UserController.update);
+
 routes.delete('/users/:id/profile', isLogged, UserController.destroy);
 
 module.exports = routes;

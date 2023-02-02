@@ -23,17 +23,20 @@ module.exports = () => {
             }
         });
 
-        const votingValue = option.option_value + 1;
+        if (!option) throw 'Opção inexistente';
+
+        const votingValue = option.votes + 1;
 
         const optionEdit = await QuizzOption.update({
             votes: votingValue
         }, {
             where: {
-                option_value: data.option_value
+                option_value: data.option_value,
+                quizz_id: data.quizz_id
             }
         });
 
-        return optionEdit;
+        return `Added ${optionEdit} vote`;
     };
 
     const deleteOptions = async quizz_id => {

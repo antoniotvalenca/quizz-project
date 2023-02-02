@@ -10,15 +10,13 @@ class Quizz extends Model {
                 type: Sequelize.STRING,
                 defaultValue: ''
             },
-            options_quantity: {
-                type: Sequelize.INTEGER,
-            },
             ongoing: {
                 type: Sequelize.BOOLEAN,
                 defaultValue: true,
             },
             end_at: {
                 type: Sequelize.STRING,
+                allowNull: true
             },
             public: {
                 type: Sequelize.BOOLEAN,
@@ -28,7 +26,9 @@ class Quizz extends Model {
             sequelize,
             paranoid: true,
             timestamps: true,
+            tableName: 'quizzes',
             createdAt: 'started_at',
+            updatedAt: 'updated_at',
             deletedAt: 'deleted_at',
         });
     }

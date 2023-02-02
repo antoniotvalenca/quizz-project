@@ -13,9 +13,7 @@ module.exports = () => {
             }
         });
 
-        if (!findQuizz) {
-            throw new Error('Este quizz não existe, não pertence a este usuário ou foi encerrado.')
-        };
+        if (!findQuizz) throw 'Este quizz não existe, não pertence a este usuário ou foi encerrado.'
 
         const allOptions = await QuizzOption.findAll({
             attributes: [
@@ -49,32 +47,29 @@ module.exports = () => {
         });
 
         const results = {
-            user_id: winner.user_id,
             quizz_id: winner.quizz_id,
             winner: winner.option_value,
             win_rate: `${(getMaxOfArray(votesArr)*100)/(sumArray)}%`,
             option_id: winner.id,
             total_votes: sumArray
         };
-
+        console.log(results);
         return await QuizzResult.create(results);
     };
 
     const showResult = async data => {
         const quizzResult = await QuizzResult.findOne({
             attributes: [
-                winner,
-                win_rate,
-                total_votes
+                'winner',
+                'win_rate',
+                'total_votes'
             ],
             where: {
                 quizz_id: data.quizz_id
             }
         });
 
-        if (!quizzResult) {
-            throw new Error('Os resultados ainda não foram gerados.')
-        };
+        if (!quizzResult) throw 'Os resultados ainda não foram gerados.'
 
         return quizzResult;
     };

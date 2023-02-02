@@ -10,9 +10,7 @@ module.exports = () => {
             }
         });
 
-        if (isCreatedQuizz) {
-            throw new Error('Você já criou um Quizz com este título.');
-        };
+        if (isCreatedQuizz) throw 'Você já criou um Quizz com este título.';
 
         return await Quizz.create(data);
     };
@@ -21,11 +19,11 @@ module.exports = () => {
         const publicQuizzes = await Quizz.findAll({
             attributes: [
                 'title',
-                'user_id',
+                'user_id'
             ],
             where: {
                 title: {
-                    [Op.iLike]: `%${data.title}`
+                    [Op.iLike]: `%${data.title}%`
                 },
                 ongoing: true,
                 public: true
@@ -37,12 +35,17 @@ module.exports = () => {
 
     const showQuizz = async filter => {
         const quizz = await Quizz.findOne({
+            attributes: ['title'],
             where: {
                 id: filter.id,
                 ongoing: true,
                 public: true
             }
         });
+
+        console.log(quizz);
+
+        if (!quizz) throw 'Este Quizz não existe ou já foi finalizado';
 
         return quizz;
     };
@@ -51,13 +54,12 @@ module.exports = () => {
         const findQuizz = await Quizz.findOne({
             where: {
                 user_id: filter.user_id,
-                id: filter.quizz_id
+                id: filter.quizz_id,
+                ongoing: true
             }
         });
 
-        if (!findQuizz) {
-            throw new Error('Este Quizz não existe.');
-        };
+        if (!findQuizz) throw 'Este Quizz não existe ou já foi finalizado.'
 
         const quizzEdit = await Quizz.update(change, {
             where: {
@@ -77,9 +79,16 @@ module.exports = () => {
             }
         });
 
-        if (!quizz) {
-            throw new Error('Este quizz não existe.')
-        };
+        if (!quizz) throw 'Este quizz não existe.'
+
+        await Quizz.update(
+            { ongoing: false },
+            { where: {
+                id: data.quizz_id,
+                user_id: data.user_id
+                }
+            }
+        );
 
         await Quizz.destroy({
             where: {

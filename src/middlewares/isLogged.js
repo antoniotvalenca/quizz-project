@@ -6,7 +6,7 @@ module.exports = (req, res, next) => {
         return res.status(401).json({
             errors: ['Usuário não está logado'],
         });
-    }
+    };
 
     const [, token] = authorization.split(' ');
 
@@ -18,7 +18,6 @@ module.exports = (req, res, next) => {
         req.email = email;
 
         next();
-
     } catch (e) {
         return res.status(401).json({
             message: ['Token inspirado ou inválido']

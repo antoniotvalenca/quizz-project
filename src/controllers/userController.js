@@ -1,37 +1,37 @@
 module.exports = () => {
     const { pick } = require('lodash');
-    const UserService = require('../services/userService');
+    const UserService = require('../services/userService')();
 
     const store = async (req, res) => {
         try {
-            const data = pick(req.data, ['name', 'age', 'cpf', 'email', 'password'])
+            const data = pick(req.body, ['name', 'born', 'cpf', 'email', 'password_hash']);
             const user = await UserService.createNewUser(data);
 
             return res.json(user)
-        } catch (e) {
+        } catch (error) {
             return res.status(500).json({
-                message: 'Erro ao criar o Usuário'
+                message: error || 'Erro ao criar o Usuário'
             });
         };
     };
 
     const login = async (req, res) => {
         try {
-            const data = pick(req.data, ['cpf', 'email', 'password']);
+            const data = pick(req.body, ['cpf', 'email', 'password']);
             const token = await UserService.loginUser(data);
 
             return res.json(token);
 
-        } catch (e) {
+        } catch (error) {
             return res.status(500).json({
-                message: 'Erro ao logar Usuário'
+                message: error || 'Erro ao logar Usuário'
             });
         };
     };
 
     const update = async (req, res) => {
         try {
-            const change = pick(req.data, ['name', 'age', 'email']);
+            const change = pick(req.body, ['name', 'born', 'email']);
             const filter = {
                 id: req.userId
             };
@@ -39,9 +39,9 @@ module.exports = () => {
             const userChanges = await UserService.updateUser(change, filter);
 
             return res.json(userChanges);
-        } catch (e) {
+        } catch (error) {
             return res.status(500).json({
-                message: 'Erro ao atualizar Usuário'
+                message: error || 'Erro ao atualizar Usuário'
             });
         };
     };
@@ -53,9 +53,9 @@ module.exports = () => {
 
             return res.json(deletedUser);
 
-        } catch (e) {
+        } catch (error) {
             return res.status(500).json({
-                message: 'Erro ao deletar Usuário'
+                message: error || 'Erro ao deletar Usuário'
             });
         };
     };

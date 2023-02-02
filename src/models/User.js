@@ -23,9 +23,6 @@ class User extends Model {
             },
             password_hash: {
                 type: Sequelize.STRING,
-            },
-            password: {
-                type: Sequelize.VIRTUAL,
             }
         }, {
             sequelize,
@@ -34,18 +31,16 @@ class User extends Model {
             updatedAt: 'updated_at',
             hooks: {
                 beforeCreate: async user => {
-                    if(user.password) { user.password_hash = await bcrypt}
+                    if (user.password_hash) {
+                        user.password_hash = await bcrypt.hash(user.password_hash, 9)
+                    }
                 }
             }
         });
-        this.addHook('beforeSave', async user => {
-            if(user.password) { user.password_hash = bcrypt.hash(user.password, 10)}
-        })
     }
 
     static associate(models) {
         this.hasMany(models.Quizz, { foreignKey: 'user_id' });
-        this.hasMany(models.QuizzResult, { foreignKey: 'user_id' })
     }
 }
 

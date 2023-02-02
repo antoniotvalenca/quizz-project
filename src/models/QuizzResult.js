@@ -3,9 +3,6 @@ const { Model, Sequelize } = require('sequelize');
 class QuizzResult extends Model {
     static init(sequelize) {
         super.init({
-            user_id: {
-                type: Sequelize.INTEGER,
-            },
             quizz_id: {
                 type: Sequelize.INTEGER,
             },
@@ -23,13 +20,15 @@ class QuizzResult extends Model {
                 defaultValue: 0
             }
         }, {
-            sequelize
+            sequelize,
+            timestamps: true,
+            createdAt: 'created_at',
+            updatedAt: 'updated_at',
         });
     }
 
     static associate(models) {
         this.belongsTo(models.Quizz, { foreignKey: 'quizz_id' }),
-        this.belongsTo(models.User, { foreignKey: 'user_id' }),
         this.belongsTo(models.QuizzOption, { foreignKey: 'option_id' })
     }
 }

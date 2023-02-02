@@ -15,10 +15,10 @@ class QuizzOption extends Model {
             }
         }, {
             sequelize,
-            paranoid: true,
             timestamps: true,
-            createdAt: 'started_at',
-            deletedAt: 'deleted_at',
+            tableName: 'quizz_options',
+            updatedAt: 'updated_at',
+            createdAt: 'created_at'
         });
     }
 

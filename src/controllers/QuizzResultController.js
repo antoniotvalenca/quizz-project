@@ -1,6 +1,5 @@
 module.exports = () => {
-    const { pick } = require('lodash');
-    const quizzResultService = require('../services/quizzResultService');
+    const quizzResultService = require('../services/quizzResultService')();
 
     const store = async (req, res) => {
         try {
@@ -12,9 +11,9 @@ module.exports = () => {
             const result = await quizzResultService.generateResult(data);
 
             return res.json(result);
-        } catch (e) {
+        } catch (error) {
             res.status(500).json({
-                message: 'Não foi possível postar resultados'
+                message: error || 'Não foi possível postar resultados'
             });
         };
     };
@@ -28,9 +27,9 @@ module.exports = () => {
             const quizzResult = await quizzResultService.showResult(data);
 
             return res.json(quizzResult);
-        } catch (e) {
+        } catch (error) {
             res.status(500).json({
-                message: 'Não foi possível mostrar resultados'
+                message: error || 'Não foi possível mostrar resultados'
             });
         };
     };

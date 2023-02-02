@@ -14,7 +14,7 @@ module.exports = () => {
             }
         });
 
-        if (user) throw new Error('CPF e/ou E-mail já cadastrados.');
+        if (user) throw 'CPF e/ou E-mail já cadastrados.';
 
         return await User.create(data)
     };
@@ -22,20 +22,15 @@ module.exports = () => {
     const loginUser = async data => {
         const user = await User.findOne({
             where: {
-                [Op.or]: [
-                    { cpf: data.cpf },
-                    { email: data.email }
-                ]
-            },
-            raw: true,
-            attributes: ['id', 'name', 'cpf', 'age', 'email', 'password_hash']
+                email: data.email
+            }
         });
 
-        if (!user) throw new Error('CPF/E-mail ou senha inválidos');
+        if (!user) throw 'CPF/E-mail ou senha inválidos';
 
         const validPassword = compareSync(data.password, user.password_hash);
 
-        if (!validPassword) throw new Error('CPF/E-mail ou senha inválidos');
+        if (!validPassword) throw 'CPF/E-mail ou senha inválidos';
 
         return jwt.sign({
             id: user.id,
