@@ -26,11 +26,11 @@ module.exports = () => {
             }
         });
 
-        if (!user) throw 'CPF/E-mail ou senha inválidos';
+        if (!user) throw 'E-mail ou senha inválidos';
 
         const validPassword = compareSync(data.password, user.password_hash);
 
-        if (!validPassword) throw 'CPF/E-mail ou senha inválidos';
+        if (!validPassword) throw 'E-mail ou senha inválidos';
 
         return jwt.sign({
             id: user.id,

@@ -17,7 +17,7 @@ module.exports = () => {
 
     const login = async (req, res) => {
         try {
-            const data = pick(req.body, ['cpf', 'email', 'password']);
+            const data = pick(req.body, ['email', 'password']);
             const token = await UserService.loginUser(data);
 
             return res.json(token);
