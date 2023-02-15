@@ -8,7 +8,7 @@ module.exports = () => {
                 born: yup.date().required(),
                 cpf: yup.string().required(),
                 email: yup.string().email().required(),
-                password_hash: yup.string().required(),
+                password_hash: yup.string().required().min(8),
             }).noUnknown()
         },
 

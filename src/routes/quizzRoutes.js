@@ -12,18 +12,19 @@ const QuizzSchema = require('../schema/quizz')();
 const QuizzResultSchema = require('../schema/result')();
 const QuizzOptionSchema = require('../schema/option')();
 
-routes.post('/quizz/create', [isLogged, SchemaValidator.validate(QuizzSchema.store)], QuizzController.store); //ok
 
-routes.post('/quizz/preferences/:quizz_id', isLogged, QuizzOptionController.store); // ok
-routes.put('/quizz/preferences/:quizz_id', [isLogged, SchemaValidator.validate(QuizzSchema.update)], QuizzController.update); // ok
-routes.delete('/quizz/preferences/:quizz_id', isLogged, QuizzController.destroy); // ok
-routes.post('/quizz/preferences/:quizz_id/postresults', isLogged, QuizzResultController.store); // ok
+routes.post('/quizz/create', [isLogged.auth, SchemaValidator.Validate(QuizzSchema.schema.store)], QuizzController.store);
 
-routes.get('/quizz/all', QuizzController.index);
+routes.post('/quizz/preferences/:quizz_id', [isLogged.auth, SchemaValidator.Validate(QuizzOptionSchema.schema.store)], QuizzOptionController.store);
+routes.put('/quizz/preferences/:quizz_id', [isLogged.auth, SchemaValidator.Validate(QuizzSchema.schema.update)], QuizzController.update);
+routes.delete('/quizz/preferences/:quizz_id', isLogged.auth, QuizzController.destroy);
+routes.post('/quizz/preferences/:quizz_id/postresults', [isLogged.auth, SchemaValidator.Validate(QuizzResultSchema.schema.store)], QuizzResultController.store);
+
+routes.get('/quizz/all', SchemaValidator.Validate(QuizzSchema.schema.index),QuizzController.index);
 routes.get('/quizz/search', QuizzController.show);
 
-routes.get('/quizz/:quizz_id/results', QuizzResultController.show); //ok
-routes.get('/quizz/:quizz_id', isLogged, QuizzOptionController.index); //ok
-routes.put('/quizz/:quizz_id', isLogged, QuizzOptionController.update); // ok
+routes.get('/quizz/:quizz_id/results', SchemaValidator.Validate(QuizzResultSchema.schema.show) ,QuizzResultController.show);
+routes.get('/quizz/:quizz_id', [isLogged.auth, SchemaValidator.Validate(QuizzOptionSchema.schema.index)], QuizzOptionController.index);
+routes.put('/quizz/:quizz_id', [isLogged.auth, SchemaValidator.Validate(QuizzOptionSchema.schema.update)], QuizzOptionController.update);
 
 module.exports = routes;

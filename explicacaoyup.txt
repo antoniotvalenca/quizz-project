@@ -1,0 +1,6 @@
+1) SCHEMA
+    -> user.js
+    -> quizz.js
+    -> option.js
+2) SCHEMA-VALIDATOR
+    -> 

@@ -11,7 +11,7 @@ module.exports = () => {
 
         index: {
             body: yup.object().shape({
-                title: yup().string().required()
+                title: yup.string().required()
             }).noUnknown()
         },
 
