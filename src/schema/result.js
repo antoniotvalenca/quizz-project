@@ -4,13 +4,17 @@ module.exports = () => {
     const schema = {
         store: {
             params: yup.object().shape({
-                quizz_id: yup.number().integer().required()
+                quizz_id: yup.number()
+                    .integer()
+                    .required()
             }).noUnknown()
         },
 
         show: {
             params: yup.object().shape({
-                quizz_id: yup.number().integer().required()
+                quizz_id: yup.number()
+                    .integer()
+                    .required()
             }).noUnknown()
         },
     };
