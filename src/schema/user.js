@@ -8,7 +8,8 @@ module.exports = () => {
         store: {
             body: yup.object().shape({
                 name: yup.string()
-                    .max(255, "it must be less than 255 characters.")
+                    .min(5, "it must has at least 5 characters")
+                    .max(256, "it must be less than 256 characters.")
                     .transform( value => { return sanitizeHtml(value); })
                     .required(),
                 born: yup.date()
@@ -18,13 +19,15 @@ module.exports = () => {
                     .test("Invalid CPF number", null, value => { return isValidCpf(value); })
                     .required(),
                 email: yup.string()
+                    .max(256, "it must be less than 256 characters")
                     .transform( value => { return sanitizeHtml(value); })
                     .email()
                     .required(),
                 password_hash: yup.string()
+                    .min(8, "it must has at least 8 characters")
+                    .max(16, "it must be less than 16 characters")
                     .transform( value => { return sanitizeHtml(value); })
-                    .required()
-                    .min(8),
+                    .required(),
             }).noUnknown()
         },
 

@@ -5,6 +5,8 @@ module.exports = () => {
         store: {
             body: yup.object().shape({
                 option_value: yup.string()
+                    .min(1, "it must has at least 1 character")
+                    .max(64, "it must be less than 64 characters")
                     .transform( value => { return sanitizeHtml(value); })
                     .required()
             }).noUnknown()

@@ -5,6 +5,8 @@ module.exports = () => {
         store: {
             body: yup.object().shape({
                 title: yup.string()
+                    .min(5, "it must has at least 5 characters")
+                    .max(256, "it must be less than 256 characters")
                     .transform( value => { return sanitizeHtml(value); })
                     .required(),
                 public: yup.boolean()
