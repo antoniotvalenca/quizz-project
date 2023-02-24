@@ -20,17 +20,25 @@ module.exports = () => {
     };
 
     const loginUser = async data => {
-        const user = await User.findOne({
+        let user = await User.findOne({
             where: {
                 email: data.email
             }
         });
 
-        if (!user) throw 'E-mail ou senha inválidos';
+        const FAKE_PASSWORD = '$2b$09$F5D0n0DPqqTtnovD9fQES.0qYbAgvIdAkZRX.sWCIZFN9ITfkQEBqa332312';
+        let isFakeUser = false;
+
+        if (!user) {
+            isFakeUser = true;
+            user = {
+                password_hash: FAKE_PASSWORD
+            }
+        };
 
         const validPassword = compareSync(data.password, user.password_hash);
 
-        if (!validPassword) throw 'E-mail ou senha inválidos';
+        if (!validPassword || isFakeUser) throw 'E-mail ou senha inválidos';
 
         return jwt.sign({
             id: user.id,
