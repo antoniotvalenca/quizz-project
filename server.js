@@ -9,10 +9,13 @@ require('./src/database');
 
 const limiter = rateLimit({
     windowsMs: 1 * 60 * 1000,
-    max: 20,
-    message: "Erro: Muitas requisições por minuto"
+    max: 2,
+    keyGenerator: (req) => req.userId,
+    skip: (req) => !req.userId,
+    handler: (req, res) => {
+      res.status(429).json({ message: 'Too many requests, please try again later.' });
+    },
 });
-
 
 app.use(limiter)
 app.use(express.json());

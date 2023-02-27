@@ -21,7 +21,7 @@ routes.delete('/quizz/preferences/:quizz_id', isLogged.auth, QuizzController.des
 routes.post('/quizz/preferences/:quizz_id/postresults', [isLogged.auth, SchemaValidator.Validate(QuizzResultSchema.schema.store)], QuizzResultController.store);
 
 routes.get('/quizz/all', SchemaValidator.Validate(QuizzSchema.schema.index),QuizzController.index);
-routes.get('/quizz/search', QuizzController.show);
+routes.get('/quizz/search', isLogged.auth, QuizzController.show);
 
 routes.get('/quizz/:quizz_id/results', SchemaValidator.Validate(QuizzResultSchema.schema.show) ,QuizzResultController.show);
 routes.get('/quizz/:quizz_id', [isLogged.auth, SchemaValidator.Validate(QuizzOptionSchema.schema.index)], QuizzOptionController.index);

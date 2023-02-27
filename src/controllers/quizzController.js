@@ -39,6 +39,7 @@ module.exports = () => {
 
     const show = async (req, res) => {
         try {
+            console.log(req.userId);
             const data = pick(req.body, ['id']);
             const quizz = await quizzService.showQuizz(data);
 
