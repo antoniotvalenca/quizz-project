@@ -43,8 +43,6 @@ module.exports = () => {
             }
         });
 
-        console.log(quizz);
-
         if (!quizz) throw 'Este Quizz não existe ou já foi finalizado';
 
         return quizz;

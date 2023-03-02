@@ -1,0 +1,39 @@
+require('./src/database');
+
+const express = require('express');
+const app = express();
+const redis = require('redis');
+const RedisStore = require('rate-limit-redis');
+const rateLimit = require("express-rate-limit");
+const userRoutes = require('./src/routes/userRoutes');
+const quizzRoutes = require('./src/routes/quizzRoutes');
+
+const redisClient = redis.createClient({
+  socket: {
+    host: 'localhost',
+    port: 6379
+  }
+});
+const connectToRedis = async () => { await redisClient.connect().then(() => console.log('conectado no redis')).catch(() => console.log('erro ao conectar')) };
+connectToRedis();
+
+const limiter = rateLimit({
+  windowMs: 5 * 60 * 1000,
+  max: 2,
+  keyGenerator: (req) => { return 3 },
+  // skip: (req) => !req.userId,
+  handler: (req, res) => {
+    res.status(429).json({ message: 'Too many requests, please try again later.' });
+  },
+  store: new RedisStore({
+    client: redisClient,
+    sendCommand: (...args) => redisClient.sendCommand(args)
+  })
+});
+
+app.use(limiter)
+app.use(express.json());
+app.use(userRoutes);
+app.use(quizzRoutes);
+
+app.listen(3002, () => { console.log('listening on port 3001') });

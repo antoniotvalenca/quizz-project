@@ -53,7 +53,6 @@ module.exports = () => {
             option_id: winner.id,
             total_votes: sumArray
         };
-        console.log(results);
         return await QuizzResult.create(results);
     };
 
