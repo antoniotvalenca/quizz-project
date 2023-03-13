@@ -1,5 +1,5 @@
 {
-  "name": "@antoniotvalenca/urna-eletronica",
+  "name": "@antoniotvalenca/quizz-project",
   "version": "1.0.0",
   "description": "Simulador de urna eletrônica para votações online",
   "main": "server.js",
