@@ -1,29 +1,52 @@
 module.exports = () => {
     const moment = require('moment');
-    const redisClient = require('../services/redisService');
-
-    redisClient.on('error', (err) => console.log('Redis Client Error', err));
+    const { getRedisClient } = require('../services/redisService');
 
     const WINDOW_SIZE_IN_HOURS = 3;
     const MAX_WINDOW_REQUEST_COUNT = 5;
     const WINDOW_LOG_INTERVAL_IN_HOURS = 1;
 
+    const REDIS_KEY_LIMIT_BY_USER_ID = `RATE_LIMIT_BY_USER_ID_`;
+    const REDIS_KEY_LIMIT_BY_IP = `RATE_LIMIT_BY_IP_`;
+
+    const getKey = (idOrIp, req) => {
+        let key;
+
+        if (idOrIp === "id") {
+            key = `${REDIS_KEY_LIMIT_BY_USER_ID}${req.userId}`;
+        } else if (idOrIp === "ip") {
+            key = `${REDIS_KEY_LIMIT_BY_IP}${req.ip}`;
+        }
+
+        return key;
+    };
+
+    const redisSetBy = async (idOrIp, req, data) => {
+        if (!idOrIp) throw new Error('Wrong middleware parameter at rateLimiter');
+
+        const key = getKey(idOrIp, req);
+
+        return await getRedisClient.set(key, JSON.stringify(data), 3600000)
+    };
+
+    const redisGetBy = async (idOrIp, req) => {
+        if (!idOrIp) throw new Error('Wrong middleware parameter at rateLimiter');
+
+        const key = getKey(idOrIp, req);
+
+        return await getRedisClient.get(key);
+    };
+
     const limit = async (req, res, next, id_or_ip) => {
         try {
             let record;
 
-            if (!redisClient) {
+            if (!getRedisClient) {
                 throw('Redis client does not exist!');
                 process.exit
             };
 
-            if (id_or_ip === "id") {
-                record = await redisClient.get(req.userId);
-            } else if (id_or_ip === "ip") {
-                record = await redisClient.get(req.ip);
-            } else {
-                throw('Wrong middleware parameter at rateLimiter');
-            };
+            record = await redisGetBy(id_or_ip, req);
 
             const currentRequestTime = moment();
 
@@ -33,12 +56,9 @@ module.exports = () => {
                     requestTimeStamp: currentRequestTime.unix(),
                     requestCount: 1
                 };
+
                 newRecord.push(requestLog);
-                if (id_or_ip === "id") {
-                    await redisClient.set(req.userId, JSON.stringify(newRecord));
-                } else if (id_or_ip === "ip") {
-                    await redisClient.set(req.ip, JSON.stringify(newRecord));
-                };
+                await redisSetBy(id_or_ip, req, newRecord)
 
                 next();
                 return;
@@ -71,19 +91,15 @@ module.exports = () => {
                 });
             };
 
-            if (id_or_ip === "id") {
-                await redisClient.set(req.userId, JSON.stringify(data));
-            } else if (id_or_ip === "ip") {
-                await redisClient.set(req.ip, JSON.stringify(data));
-            };
+            await redisSetBy(id_or_ip, req, data)
 
             next();
         } catch (error) {
             res.status(429).json({
                 status: 'error',
                 message: error.message
-            })
-        }
+            });
+        };
     };
 
     return {

@@ -5,7 +5,9 @@ const app = express();
 
 const userRoutes = require('./src/routes/userRoutes');
 const quizzRoutes = require('./src/routes/quizzRoutes');
-const redisClient = require('./src/services/redisService');
+const { getRedisClient } = require('./src/services/redisService');
+
+const redisClient = getRedisClient();
 
 app.use(express.json());
 app.use(userRoutes);
